@@ -6,6 +6,7 @@ const debugging = true
 ## each of which consume a fixed region of the processor's address space
 
 type
+  ## A sequential device map
   TDeviceMap = object of TObject
     devices : seq[PDevice]
 
@@ -16,21 +17,27 @@ type
     address : int
 
 proc newResolvedDevice(device : PDevice, address : int) : TResolvedDevice =
+  ## Create a new resolved device consisting of a reference to the device and it's
+  ## address in global memory space
   var resolvedAddress : TResolvedDevice
   resolvedAddress.device = device
   resolvedAddress.address = address
   return resolvedAddress
 
 proc newDeviceMap*() : PDeviceMap =
+  ## Create a new device map with empty address space
   var deviceMap : PDeviceMap
   deviceMap = new(TDeviceMap)
   deviceMap.devices = @[]
   return deviceMap
 
 method addDevice*(self : PDeviceMap, device : PDevice) =
+  ## Add a new device. This appends it into the address space
+  ## and consumes len(device) addresses
   self.devices.add(device)
 
 method resolveDevice(self : PDeviceMap, address : int) : TResolvedDevice =
+  ## Resolve the device associated with a given address
   var index : int = 0
   for device in self.devices:
     if address < (index + device.len):
@@ -39,10 +46,12 @@ method resolveDevice(self : PDeviceMap, address : int) : TResolvedDevice =
   raise newException(EBase, "Unable to resolve " & $address & " to a device")
 
 method write*(self : PDeviceMap, address : int, value : uint8) =
+  ## Write an 8-bit value into the device map at address
   var resolvedDevice : TResolvedDevice = self.resolveDevice(address)
   resolvedDevice.device.write(address - resolvedDevice.address, value)
 
 method read*(self : PDeviceMap, address : int) : uint8 =
+  ## Read an 8-bit value from the device map at address
   var resolvedDevice : TResolvedDevice = self.resolveDevice(address)
   return resolvedDevice.device.read(address - resolvedDevice.address)
 
