@@ -24,7 +24,7 @@ template testSuite*(suiteNameBody : expr, body : stmt) : stmt {.immediate.} =
       for messageText in items(messageSequence):
         echo(indent & messageText)
 
-    template test(name : string, testBody : stmt) {.immediate, dirty.} =
+    template test*(name : string, testBody : stmt) {.immediate, dirty.} =
       block:
         bind runTests, messageSequence
         messageSequence = @[]
