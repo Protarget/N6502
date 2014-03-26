@@ -7,8 +7,8 @@ const debugging = true
 
 type
   ## The base device
-  TDevice = object of TObject
-  PDevice = ref TDevice
+  TDevice* = object of TObject
+  PDevice* = ref TDevice
 
   ## A basic RAM device
   TMemory* = object of TDevice
@@ -29,7 +29,7 @@ method len*(self : PDevice) : int =
   ## A method implemented by a device to define it's length in memory
   return 1
 
-proc newMemory(size : int) : PMemory =
+proc newMemory*(size : int) : PMemory =
   ## Create a new memory device of the specified size
   var device : PMemory = new(TMemory)
   device.memory = @[]

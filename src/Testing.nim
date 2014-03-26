@@ -1,3 +1,5 @@
+import strutils
+
 const runTests = true
 
 template testSuite*(suiteNameBody : expr, body : stmt) : stmt {.immediate.} =
@@ -26,7 +28,7 @@ template testSuite*(suiteNameBody : expr, body : stmt) : stmt {.immediate.} =
 
     template test*(name : string, testBody : stmt) {.immediate, dirty.} =
       block:
-        bind runTests, messageSequence
+        bind runTests, messageSequence, repeatStr
         messageSequence = @[]
         if runTests:
           try:
@@ -34,8 +36,10 @@ template testSuite*(suiteNameBody : expr, body : stmt) : stmt {.immediate.} =
             testBody
           
           except:
-            echo(suiteName & " | " & name & " failed: " & getCurrentExceptionMsg())
-            outputMessages(suiteName & " | " & name & " message: ")
+            var text : string = suiteName
+            echo(text & " | " & name & " failed: " & getCurrentExceptionMsg())
+            outputMessages(repeatStr(text.len, " ") & " > ")
+            echo " "
 
           finally:
             runFinish()
