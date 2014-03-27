@@ -19,8 +19,7 @@ type
     interruptEnabled = 4
     decimalMode = 8
     interrupt = 16
-    # why nothing on the 6th bit? We may never know. Apparently this is supposed to be 1 at all times
-    overflow = 64
+    overflow = 64  # why nothing on the 6th bit? We may never know. Apparently this is supposed to be 1 at all times
     sign = 128
 
 proc newRegisters*() : PRegisters =
@@ -62,7 +61,7 @@ testSuite("Register Testing"):
     message("SP Check")
     assert(registers.sp == 0)
     message("P Check")
-    assert(registers.p == 0)
+    assert(registers.p == 32)
 
   test("Register Assignment Check"):
     message("A Check")

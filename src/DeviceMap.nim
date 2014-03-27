@@ -7,7 +7,7 @@ const debugging = true
 
 type
   ## A sequential device map
-  TDeviceMap = object of TObject
+  TDeviceMap* = object of TObject
     devices : seq[PDevice]
 
   PDeviceMap* = ref TDeviceMap
