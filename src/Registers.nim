@@ -1,4 +1,6 @@
-import Testing, Unsigned
+import Testing, unsigned
+
+## A set of 6502 registers
 
 type
   TRegisters* = object
@@ -17,26 +19,31 @@ type
     interruptEnabled = 4
     decimalMode = 8
     interrupt = 16
+    # why nothing on the 6th bit? We may never know. Apparently this is supposed to be 1 at all times
     overflow = 64
     sign = 128
 
 proc newRegisters*() : PRegisters =
+  ## Create a new set of registers and populate them with default values
   var registers : PRegisters = new(TRegisters)
   registers.a = 0
   registers.x = 0
   registers.y = 0
   registers.pc = 0
   registers.sp = 0
-  registers.p = 0
+  registers.p = 32 #Set the 6th bit active
+
   return registers
 
 method setFlag(self : PRegisters, flag : TProcessorFlag, value : bool) =
+  ## Set a flag in the processor flags register to a given value
   if value:
     self.p = self.p or cast[uint8](flag)
   else:
     self.p = self.p and (not cast[uint8](flag))
 
 method getFlag(self : PRegisters, flag : TProcessorFlag) : bool =
+  ## Get the value of a flag in the processor flags register
   return cast[int]((self.p and cast[uint8](flag))) > 0
 
 testSuite("Register Testing"):
